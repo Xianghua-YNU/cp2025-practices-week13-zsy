@@ -34,7 +34,7 @@ def planck_law(wavelength, temperature):
     """
     # TODO: 实现普朗克黑体辐射公式
     # [STUDENT_CODE_HERE]
-    wavelength = np.clip(wavelength, 1e-15, np.inf)
+    wavelength = np.clip(wavelength, 1e-15, np.inf)  
     exponent = H * C / (wavelength * K_B * temperature)
 
     denominator = wavelength**5 * (np.exp(exponent) - 1)
@@ -63,11 +63,7 @@ def calculate_visible_power_ratio(temperature):
         VISIBLE_LIGHT_MAX
     )
     
-    total_integral, _ = integrate.quad(
-        lambda wavelength: planck_law(wavelength, temperature),
-        1e-15, 
-        1e-4    
-    )
+    total_integral, _ = integrate.quad(lambda wavelength: planck_law(wavelength, temperature), 1e-15, 1e-4)
     
     if total_integral == 0:
         return 0
