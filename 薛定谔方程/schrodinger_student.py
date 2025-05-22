@@ -129,7 +129,7 @@ def find_energy_level_bisection(n, V, w, m, precision=0.001, E_min=0.001, E_max=
             E_low = E_mid
 
     return (E_low + E_high) / 2
-
+    
 def main():
     """
     主函数，执行方势阱能级的计算和可视化
