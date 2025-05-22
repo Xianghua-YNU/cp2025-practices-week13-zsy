@@ -34,11 +34,11 @@ def planck_law(wavelength, temperature):
     """
     # TODO: 实现普朗克黑体辐射公式
     # [STUDENT_CODE_HERE]
-    wavelength = np.clip(wavelength, 1e-15, np.inf)  
+    wavelength = np.clip(wavelength, 1e-18, np.inf) 
     exponent = H * C / (wavelength * K_B * temperature)
 
     denominator = wavelength**5 * (np.exp(exponent) - 1)
-    denominator = np.clip(denominator, 1e-35, np.inf)
+    denominator = np.clip(denominator, 1e-40, np.inf) 
     
     intensity = (2 * H * C**2) / denominator
     return intensity
@@ -63,7 +63,7 @@ def calculate_visible_power_ratio(temperature):
         VISIBLE_LIGHT_MAX
     )
     
-    total_integral, _ = integrate.quad(lambda wavelength: planck_law(wavelength, temperature), 1e-15, 1e-4)
+    total_integral, _ = integrate.quad(lambda wavelength: planck_law(wavelength, temperature), 1e-15, 1e-3)
     
     if total_integral == 0:
         return 0
@@ -84,7 +84,15 @@ def plot_efficiency_vs_temperature(temp_range):
     """
     # TODO: 计算并绘制效率-温度曲线
     # [STUDENT_CODE_HERE]
-    raise NotImplementedError("请在 {} 中实现此函数".format(__file__))
+    efficiencies = np.array([calculate_visible_power_ratio(T) for T in temp_range])
+    
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.plot(temp_range, efficiencies, 'b-', linewidth=2)
+    ax.set_xlabel('Temperature (K)', fontsize=12)
+    ax.set_ylabel('Visible Light Efficiency', fontsize=12)
+    ax.set_title('Incandescent Lamp Efficiency vs Temperature', fontsize=14)
+    ax.grid(True, alpha=0.3)
+    
     return fig, temp_range, efficiencies
 
 
