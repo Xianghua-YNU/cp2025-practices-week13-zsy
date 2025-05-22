@@ -103,7 +103,7 @@ def find_energy_level_bisection(n, V, w, m, precision=0.001, E_min=0.001, E_max=
     # 计算函数值
    
 
-   if n % 2 == 0:  # 偶数能级 (0, 2, 4, ...)
+    if n % 2 == 0:  # 偶数能级 (0, 2, 4, ...)
         equation = lambda E: energy_equation_even(E, V, w, m)
     else:  # 奇数能级 (1, 3, 5, ...)
         equation = lambda E: energy_equation_odd(E, V, w, m)
