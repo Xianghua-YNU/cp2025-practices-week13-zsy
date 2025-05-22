@@ -32,17 +32,17 @@ def calculate_y_values(E_values, V, w, m):
     # [STUDENT_CODE_HERE]
     # 提示: 注意单位转换和避免数值计算中的溢出或下溢
     
+    w = w * 1e-9  # 将宽度转换为米
     V_joules = V * EV_TO_JOULE
     E_joules = E_values * EV_TO_JOULE
-    w_nano = w * 1e9  # 转换到纳米单位
 
     # 计算各个项
     k = np.sqrt(2 * m * E_joules) / HBAR
     q = np.sqrt(2 * m * (V_joules - E_joules)) / HBAR
 
-    y1 = np.tan(k * w_nano)
-    y2 = np.sqrt(V - E_values) / E_values
-    y3 = -np.sqrt(E_values) / (V - E_values)
+    y1 = np.tan(k * w)
+    y2 = np.sqrt((V - E_values) / E_values)
+    y3 = -np.sqrt(E_values / (V - E_values))
 
     return y1, y2, y3
 
@@ -69,9 +69,9 @@ def plot_energy_functions(E_values, y1, y2, y3):
     ax.plot(E_values, y2, label='sqrt((V-E)/E)', color='red', linestyle='--')
     ax.plot(E_values, y3, label='-sqrt(E/(V-E))', color='green', linestyle='--')
 
-    ax.set_title('能级方程')
-    ax.set_xlabel('能量 E (eV)')
-    ax.set_ylabel('函数值')
+    ax.set_title('Energy level equation')
+    ax.set_xlabel('Energy E (eV)')
+    ax.set_ylabel('function value')
     ax.legend()
     ax.grid(True)
     
@@ -105,13 +105,14 @@ def find_energy_level_bisection(n, V, w, m, precision=0.001, E_min=0.001, E_max=
     def f_E(E):
         E_joules = E * EV_TO_JOULE
         V_joules = V * EV_TO_JOULE
+        w_meters = w * 1e-9  # 将宽度转换为米
         k = np.sqrt(2 * m * E_joules) / HBAR
         q = np.sqrt(2 * m * (V_joules - E_joules)) / HBAR
 
         if n % 2 == 0:  # 偶数能级
-            return np.tan(k * w) - np.sqrt((V - E) / E)
+            return np.tan(k * w_meters) - np.sqrt((V - E) / E)
         else:  # 奇数能级
-            return np.tan(k * w) + np.sqrt(E / (V - E))
+            return np.tan(k * w_meters) + np.sqrt(E / (V - E))
 
     # 二分法求解
     max_iter = 1000  # 设置最大迭代次数
