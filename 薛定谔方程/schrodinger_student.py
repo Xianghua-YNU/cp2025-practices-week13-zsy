@@ -32,10 +32,19 @@ def calculate_y_values(E_values, V, w, m):
     # [STUDENT_CODE_HERE]
     # 提示: 注意单位转换和避免数值计算中的溢出或下溢
     
-    raise NotImplementedError("请在 {} 中实现此函数。".format(__file__))
-    
-    return y1, y2, y3
+    V_joules = V * EV_TO_JOULE
+    E_joules = E_values * EV_TO_JOULE
+    w_nano = w * 1e9  # 转换到纳米单位
 
+    # 计算各个项
+    k = np.sqrt(2 * m * E_joules) / HBAR
+    q = np.sqrt(2 * m * (V_joules - E_joules)) / HBAR
+
+    y1 = np.tan(k * w_nano)
+    y2 = np.sqrt(V - E_values) / E_values
+    y3 = -np.sqrt(E_values) / (V - E_values)
+
+    return y1, y2, y3
 
 def plot_energy_functions(E_values, y1, y2, y3):
     """
@@ -54,7 +63,17 @@ def plot_energy_functions(E_values, y1, y2, y3):
     # [STUDENT_CODE_HERE]
     # 提示: 使用不同颜色和线型，添加适当的标签、图例和标题
     
-    raise NotImplementedError("请在 {} 中实现此函数。".format(__file__))
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    ax.plot(E_values, y1, label='tan(kw)', color='blue')
+    ax.plot(E_values, y2, label='sqrt((V-E)/E)', color='red', linestyle='--')
+    ax.plot(E_values, y3, label='-sqrt(E/(V-E))', color='green', linestyle='--')
+
+    ax.set_title('能级方程')
+    ax.set_xlabel('能量 E (eV)')
+    ax.set_ylabel('函数值')
+    ax.legend()
+    ax.grid(True)
     
     return fig
 
@@ -79,9 +98,34 @@ def find_energy_level_bisection(n, V, w, m, precision=0.001, E_min=0.001, E_max=
     # [STUDENT_CODE_HERE]
     # 提示: 需要考虑能级的奇偶性，偶数能级使用偶宇称方程，奇数能级使用奇宇称方程
     
-    raise NotImplementedError("请在 {} 中实现此函数。".format(__file__))
-    
-    return energy_level
+    if E_max is None:
+        E_max = V
+
+    # 计算函数值
+    def f_E(E):
+        E_joules = E * EV_TO_JOULE
+        V_joules = V * EV_TO_JOULE
+        k = np.sqrt(2 * m * E_joules) / HBAR
+        q = np.sqrt(2 * m * (V_joules - E_joules)) / HBAR
+
+        if n % 2 == 0:  # 偶数能级
+            return np.tan(k * w * 1e9) - np.sqrt((V - E) / E)
+        else:  # 奇数能级
+            return np.tan(k * w * 1e9) + np.sqrt(E / (V - E))
+
+    # 二分法求解
+    while E_max - E_min > precision:
+        E_mid = (E_min + E_max) / 2
+        f_mid = f_E(E_mid)
+        
+        if f_mid == 0:
+            return E_mid
+        elif f_mid * f_E(E_min) < 0:
+            E_max = E_mid
+        else:
+            E_min = E_mid
+
+    return (E_min + E_max) / 2
 
 
 def main():
