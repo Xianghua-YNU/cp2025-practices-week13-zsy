@@ -21,10 +21,14 @@ def load_sunspot_data(url):
     """
     # TODO: 使用np.loadtxt读取数据，只保留第2(年份)和3(太阳黑子数)列
     # [STUDENT_CODE_HERE]
-    data = np.loadtxt(url)
-    years = data[:, 0]
-    sunspots = data[:, 1]
-    return years, sunspots
+    try:
+        data = np.loadtxt(url, usecols=(0, 1))  # 指定只读取前两列
+        years = data[:, 0]
+        sunspots = data[:, 1]
+        return years, sunspots
+    except ValueError as e:
+        print(f"Error loading data: {e}")
+        raise
 
 def plot_sunspot_data(years, sunspots):
     """
