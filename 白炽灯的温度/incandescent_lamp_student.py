@@ -58,17 +58,18 @@ def calculate_visible_power_ratio(temperature):
         VISIBLE_LIGHT_MAX
     )
 
-    # 注意：总积分范围应覆盖更广的波长范围，但需要避开可能导致溢出的极短波长
+    # 积分范围调整为1e-9到1e-3米，覆盖紫外到红外
     total_integral, _ = integrate.quad(
         lambda wavelength: planck_law(wavelength, temperature),
-        1e-9,  # 从1皮米开始
-        1e-3    # 到1毫米
+        1e-9,  # 从1纳米开始
+        1e-3   # 到1毫米
     )
-
-    if total_integral == 0:
-        return 0
-
-    visible_power_ratio = visible_integral / total_integral
+    def intensity_function(wavelength):
+        return planck_law(wavelength, temperature)
+    
+    visible_power, _ = integrate.quad(intensity_function, VISIBLE_LIGHT_MIN, VISIBLE_LIGHT_MAX)
+    total_power, _ = integrate.quad(intensity_function, 1e-9, 10000e-9)
+    visible_power_ratio = visible_power / total_power
     return visible_power_ratio
     
 def plot_efficiency_vs_temperature(temp_range):
