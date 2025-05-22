@@ -109,9 +109,9 @@ def find_energy_level_bisection(n, V, w, m, precision=0.001, E_min=0.001, E_max=
         q = np.sqrt(2 * m * (V_joules - E_joules)) / HBAR
 
         if n % 2 == 0:  # 偶数能级
-            return np.tan(k * w * 1e9) - np.sqrt((V - E) / E)
+            return np.tan(k * w) - np.sqrt((V - E) / E)
         else:  # 奇数能级
-            return np.tan(k * w * 1e9) + np.sqrt(E / (V - E))
+            return np.tan(k * w) + np.sqrt(E / (V - E))
 
     # 二分法求解
     while E_max - E_min > precision:
@@ -126,7 +126,6 @@ def find_energy_level_bisection(n, V, w, m, precision=0.001, E_min=0.001, E_max=
             E_min = E_mid
 
     return (E_min + E_max) / 2
-
 
 def main():
     """
