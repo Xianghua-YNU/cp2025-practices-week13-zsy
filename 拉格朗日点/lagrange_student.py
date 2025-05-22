@@ -83,7 +83,7 @@ def newton_method(f, df, x0, tol=1e-8, max_iter=100):
         x = x_prev - f(x_prev)/df(x_prev)
         if abs(x - x_prev) < tol:
             converged = True
-            break
+            break 
     
     return x, iterations, converged
 
