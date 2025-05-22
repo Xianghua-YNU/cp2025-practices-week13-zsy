@@ -104,7 +104,7 @@ def find_main_period(frequencies, power):
     # TODO: 实现主周期检测
     # [STUDENT_CODE_HERE]
     max_power_index = np.argmax(power)
-    max_frequency = frequencies[max_power_index]
+    max_frequency = frequencies[max_power_index] 
     period = 1 / max_frequency * 12
     
 
