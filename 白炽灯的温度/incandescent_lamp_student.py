@@ -36,9 +36,10 @@ def planck_law(wavelength, temperature):
     # [STUDENT_CODE_HERE]
     wavelength = np.clip(wavelength, 1e-18, np.inf) 
     exponent = H * C / (wavelength * K_B * temperature)
+    exponent = np.clip(exponent, -np.inf, 700)
 
     denominator = wavelength**5 * (np.exp(exponent) - 1)
-    denominator = np.clip(denominator, 1e-40, np.inf) 
+    denominator = np.clip(denominator, 1e-40, np.inf)
     
     intensity = (2 * H * C**2) / denominator
     return intensity
