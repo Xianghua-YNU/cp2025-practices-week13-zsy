@@ -13,7 +13,7 @@ from scipy.optimize import minimize_scalar
 
 # 物理常数
 H = 6.62607015e-34  # 普朗克常数 (J·s)
-C = 299792458       # 光速 (m/s)
+C = 299792458       # 光速 (m/s) 
 K_B = 1.380649e-23  # 玻尔兹曼常数 (J/K)
 
 # 可见光波长范围 (m)
@@ -58,11 +58,10 @@ def calculate_visible_power_ratio(temperature):
         VISIBLE_LIGHT_MAX
     )
 
-    # 积分范围调整为1e-9到1e-3米，覆盖紫外到红外
     total_integral, _ = integrate.quad(
         lambda wavelength: planck_law(wavelength, temperature),
-        1e-9,  # 从1纳米开始
-        1e-3   # 到1毫米
+        1e-9,  
+        1e-3   
     )
     def intensity_function(wavelength):
         return planck_law(wavelength, temperature)
@@ -108,7 +107,7 @@ def find_optimal_temperature():
     # [STUDENT_CODE_HERE]
     result = minimize_scalar(
         lambda T: -calculate_visible_power_ratio(T),
-        bounds=(1000, 10000),  # 扩大搜索范围
+        bounds=(1000, 10000),  
         method='bounded',
         options={'xatol': 1.0}
     )
