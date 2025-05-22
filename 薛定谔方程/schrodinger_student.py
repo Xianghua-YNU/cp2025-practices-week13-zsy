@@ -96,11 +96,9 @@ def find_energy_level_bisection(n, V, w, m, precision=0.001, E_min=0.001, E_max=
     # 提示: 需要考虑能级的奇偶性，偶数能级使用偶宇称方程，奇数能级使用奇宇称方程
     
     if E_max is None:
-        E_max = V
+        E_max = V - 0.001
 
-    # 初始化搜索区间
-    E_low = E_min
-    E_high = E_max
+    E_low, E_high = E_min, E_max
 
     # 计算函数值
     def f_E(E):
@@ -110,25 +108,26 @@ def find_energy_level_bisection(n, V, w, m, precision=0.001, E_min=0.001, E_max=
         q = np.sqrt(2 * m * (V_joules - E_joules)) / HBAR
 
         if n % 2 == 0:  # 偶数能级
-            return np.tan(k * w) - np.sqrt((V - E) / E)
+            return lambda E: energy_equation_even(E, V, w, m)
         else:  # 奇数能级
-            return np.tan(k * w) + np.sqrt(E / (V - E))
+            return equation = lambda E: energy_equation_odd(E, V, w, m)
 
-    # 二分法求解
-    max_iter = 10000  # 设置较大的最大迭代次数
-    for _ in range(max_iter):
-        E_mid = (E_low + E_high) / 2
-        f_mid = f_E(E_mid)
+   while (E_max - E_min) > precision:
+        E_mid = (E_min + E_max) / 2  # 区间中点
+        f_E_mid = equation(E_mid)
         
-        if abs(f_mid) < precision or E_high - E_low < precision:
+        if abs(f_E_mid) < 1e-10:  
             return E_mid
         
-        if f_mid * f_E(E_low) < 0:
-            E_high = E_mid
-        else:
-            E_low = E_mid
-
-    return (E_low + E_high) / 2
+        if f_E_max * f_E_mid < 0:  
+            E_min = E_mid
+            f_E_min = f_E_mid
+        else:  # 如果根在右半区间
+            E_max = E_mid
+            f_E_max = f_E_mid
+    
+    # 返回区间中点作为近似解
+    return (E_min + E_max) / 2 
     
 def main():
     """
