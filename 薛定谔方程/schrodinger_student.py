@@ -108,7 +108,7 @@ def find_energy_level_bisection(n, V, w, m, precision=0.001, E_min=0.001, E_max=
     else:  # 奇数能级 (1, 3, 5, ...)
         equation = lambda E: energy_equation_odd(E, V, w, m)
         
-  def f_E(E):
+    def f_E(E):
         E_joules = E * EV_TO_JOULE
         V_joules = V * EV_TO_JOULE
         k = np.sqrt(2 * m * E_joules) / HBAR
