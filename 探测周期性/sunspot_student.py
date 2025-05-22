@@ -21,7 +21,9 @@ def load_sunspot_data(url):
     """
     # TODO: 使用np.loadtxt读取数据，只保留第2(年份)和3(太阳黑子数)列
     # [STUDENT_CODE_HERE]
-    raise NotImplementedError("请在 {} 中实现此函数".format(__file__))
+    data = np.loadtxt(url)
+    years = data[:, 0]
+    sunspots = data[:, 1]
     return years, sunspots
 
 def plot_sunspot_data(years, sunspots):
@@ -34,8 +36,14 @@ def plot_sunspot_data(years, sunspots):
     """
     # TODO: 实现数据可视化
     # [STUDENT_CODE_HERE]
-    raise NotImplementedError("请在 {} 中实现此函数".format(__file__))
-
+    plt.figure(figsize=(10, 6))
+    plt.plot(years, sunspots)
+    plt.title('Graph of the variation of sunspot quantity over time')
+    plt.xlabel('Years')
+    plt.ylabel('Number of sunspots')
+    plt.grid(True)
+    plt.savefig('sunspot_data.png') 
+    plt.show()
 def compute_power_spectrum(sunspots):
     """
     计算太阳黑子数据的功率谱
@@ -48,7 +56,14 @@ def compute_power_spectrum(sunspots):
     """
     # TODO: 实现傅里叶变换和功率谱计算
     # [STUDENT_CODE_HERE]
-    raise NotImplementedError("请在 {} 中实现此函数".format(__file__))
+    n = len(sunspots)
+    fft = np.fft.fft(sunspots)
+    power = np.abs(fft)**2 / n
+    frequencies = np.fft.fftfreq(n)
+ 
+    positive_indices = np.where(frequencies > 0)
+    frequencies = frequencies[positive_indices]
+    power = power[positive_indices]
     return frequencies, power
 
 def plot_power_spectrum(frequencies, power):
@@ -61,7 +76,15 @@ def plot_power_spectrum(frequencies, power):
     """
     # TODO: 实现功率谱可视化
     # [STUDENT_CODE_HERE]
-    raise NotImplementedError("请在 {} 中实现此函数".format(__file__))
+    plt.figure(figsize=(10, 6))
+    plt.plot(frequencies, power)
+    plt.title('Sunspot data power spectrum')
+    plt.xlabel('Frequency')
+    plt.ylabel('Power')
+    plt.grid(True)
+    plt.xlim(0, 0.05)
+    plt.savefig('power_spectrum.png')  
+    plt.show()
 
 def find_main_period(frequencies, power):
     """
@@ -76,7 +99,9 @@ def find_main_period(frequencies, power):
     """
     # TODO: 实现主周期检测
     # [STUDENT_CODE_HERE]
-    raise NotImplementedError("请在 {} 中实现此函数".format(__file__))
+    max_power_index = np.argmax(power)
+    max_frequency = frequencies[max_power_index]
+    main_period = 1 / max_frequency * 12 
     return main_period
 
 def main():
