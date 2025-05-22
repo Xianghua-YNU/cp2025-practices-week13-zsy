@@ -34,11 +34,9 @@ def planck_law(wavelength, temperature):
     """
     # TODO: 实现普朗克黑体辐射公式
     # [STUDENT_CODE_HERE]
-    wavelength = np.clip(wavelength, 1e-12, np.inf)
-    exponent = H * C / (wavelength * K_B * temperature)
-    
-    denominator = wavelength**5 * (np.exp(exponent) - 1)
-    denominator = np.clip(denominator, 1e-30, np.inf)
+    wavelength = np.clip(wavelength, 1e-15, np.inf) 
+    denominator = np.clip(denominator, 1e-35, np.inf)  
+    total_integral, _ = integrate.quad(lambda wavelength: planck_law(wavelength, temperature), 1e-12, 1e-4)
     
     intensity = (2 * H * C**2) / denominator
     return intensity
