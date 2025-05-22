@@ -142,11 +142,11 @@ def plot_lagrange_equation(r_min, r_max, num_points=1000):
     f_values = np.array([lagrange_equation(r) for r in r_values])
     
     fig = plt.figure(figsize=(10, 6))
-    plt.plot(r_values, f_values, label='L1方程')
+    plt.plot(r_values, f_values, label='L1 equation')
     plt.axhline(0, color='black', linewidth=0.5)
-    plt.title('L1拉格朗日点位置方程')
-    plt.xlabel('距离地心距离 r (m)')
-    plt.ylabel('方程值')
+    plt.title('L1 Lagrange point position equation')
+    plt.xlabel('Distance from the center of the Earth r (m)')
+    plt.ylabel('The value of the equation')
     plt.grid(True)
     plt.legend()
     return fig
