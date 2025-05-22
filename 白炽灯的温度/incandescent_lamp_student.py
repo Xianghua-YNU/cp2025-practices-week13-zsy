@@ -34,7 +34,8 @@ def planck_law(wavelength, temperature):
     """
     # TODO: 实现普朗克黑体辐射公式
     # [STUDENT_CODE_HERE]
-    raise NotImplementedError("请在 {} 中实现此函数".format(__file__))
+    exponent = H * C / (wavelength * K_B * temperature)
+    intensity = (2 * H * C**2) / (wavelength**5 * (np.exp(exponent) - 1))
     return intensity
 
 
@@ -51,7 +52,19 @@ def calculate_visible_power_ratio(temperature):
     # TODO: 使用数值积分计算可见光效率
     # 提示: 使用scipy.integrate.quad进行积分
     # [STUDENT_CODE_HERE]
-    raise NotImplementedError("请在 {} 中实现此函数".format(__file__))
+    visible_integral, _ = integrate.quad(
+        lambda wavelength: planck_law(wavelength, temperature),
+        VISIBLE_LIGHT_MIN,
+        VISIBLE_LIGHT_MAX
+    )
+    
+    total_integral, _ = integrate.quad(
+        lambda wavelength: planck_law(wavelength, temperature),
+        1e-12, 
+        np.inf
+    )
+    
+    visible_power_ratio = visible_integral / total_integral
     return visible_power_ratio
 
 
@@ -81,8 +94,15 @@ def find_optimal_temperature():
     # TODO: 使用scipy.optimize.minimize_scalar寻找最优温度
     # 提示: 设置bounds=(1000,10000)和options={'xatol':1.0}
     # [STUDENT_CODE_HERE]
-    raise NotImplementedError("请在 {} 中实现此函数".format(__file__))
-    return optimal_temp, optimal_efficiency
+    efficiencies = np.array([calculate_visible_power_ratio(T) for T in temp_range])
+    
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.plot(temp_range, efficiencies, 'b-', linewidth=2)
+    ax.set_xlabel('Temperature (K)', fontsize=12)
+    ax.set_ylabel('Visible Light Efficiency', fontsize=12)
+    ax.set_title('Incandescent Lamp Efficiency vs Temperature', fontsize=14)
+    ax.grid(True, alpha=0.3)
+    return fig, optimal_temp, optimal_efficiency
 
 
 def main():
