@@ -117,7 +117,7 @@ def find_main_period(frequencies, power):
     elif period > max_period:
         return max_period
     else:
-        return main_period
+        return period
 
 def main():
     # 数据文件路径
