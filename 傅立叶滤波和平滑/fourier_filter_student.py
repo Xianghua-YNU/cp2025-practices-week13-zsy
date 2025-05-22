@@ -46,14 +46,15 @@ def plot_data(data, title="Dow Jones Industrial Average"):
     # [STUDENT_CODE_HERE]
     # 提示: 使用plt.plot绘制数据，添加适当的标签和标题
     
-    plt.figure(figsize=(10, 6))
+    fig = plt.figure(figsize=(10, 6))
     plt.plot(data)
     plt.title(title)
-    plt.xlabel("交易日")
-    plt.ylabel("指数值")
+    plt.xlabel("trading day")
+    plt.ylabel("exponential value")
     plt.grid(True)
     plt.savefig(f"{title}.png")  
     plt.show()
+    return fig
 
 def fourier_filter(data, keep_fraction=0.1):
     """
@@ -101,16 +102,17 @@ def plot_comparison(original, filtered, title="Fourier Filter Result"):
     # 2. 添加图例、标签和标题
     # 3. 使用plt.grid添加网格线
     
-    plt.figure(figsize=(10, 6))
-    plt.plot(original, label="原始数据", alpha=0.7)
-    plt.plot(filtered, label="滤波后数据", linestyle="--")
+    fig = plt.figure(figsize=(10, 6))
+    plt.plot(original, label="original data", alpha=0.7)
+    plt.plot(filtered, label="Filtered data", linestyle="--")
     plt.title(title)
-    plt.xlabel("交易日")
-    plt.ylabel("指数值")
+    plt.xlabel("trading day")
+    plt.ylabel("exponential value")
     plt.legend()
     plt.grid(True)
     plt.savefig(f"{title}.png") 
     plt.show()
+    return fig
 
 def main():
     # 任务1：数据加载与可视化
