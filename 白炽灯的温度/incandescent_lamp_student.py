@@ -36,15 +36,13 @@ def planck_law(wavelength, temperature):
     # [STUDENT_CODE_HERE]
     wavelength = np.clip(wavelength, 1e-18, np.inf)
     exponent = H * C / (wavelength * K_B * temperature)
-    # 避免指数溢出
-    wavelength = np.clip(wavelength, 1e-18, np.inf)
-    exponent = H * C / (wavelength * K_B * temperature)
     # 避免指数溢出，同时保留更多精度
     exponent = np.clip(exponent, -700, 700)
     denominator = wavelength**5 * (np.exp(exponent) - 1)
     denominator = np.clip(denominator, 1e-40, np.inf)
     intensity = (2 * H * C**2) / denominator
     return intensity
+
 
 
 
@@ -62,14 +60,6 @@ def calculate_visible_power_ratio(temperature):
     # TODO: 使用数值积分计算可见光效率
     # 提示: 使用scipy.integrate.quad进行积分
     # [STUDENT_CODE_HERE]
-    visible_integral, _ = integrate.quad(
-        lambda wavelength: planck_law(wavelength, temperature),
-        VISIBLE_LIGHT_MIN,
-        VISIBLE_LIGHT_MAX
-    )
-
-    # 注意：总积分范围应覆盖更广的波长范围，但需要避开可能导致溢出的极短波长
-    # 这里从1e-6米（1微米）开始积分，覆盖紫外、可见光和红外
     visible_integral, _ = integrate.quad(
         lambda wavelength: planck_law(wavelength, temperature),
         VISIBLE_LIGHT_MIN,
