@@ -37,11 +37,15 @@ def planck_law(wavelength, temperature):
     wavelength = np.clip(wavelength, 1e-18, np.inf)
     exponent = H * C / (wavelength * K_B * temperature)
     # 避免指数溢出
+    wavelength = np.clip(wavelength, 1e-18, np.inf)
+    exponent = H * C / (wavelength * K_B * temperature)
+    # 避免指数溢出，同时保留更多精度
     exponent = np.clip(exponent, -700, 700)
     denominator = wavelength**5 * (np.exp(exponent) - 1)
     denominator = np.clip(denominator, 1e-40, np.inf)
     intensity = (2 * H * C**2) / denominator
     return intensity
+
 
 
 
@@ -66,10 +70,18 @@ def calculate_visible_power_ratio(temperature):
 
     # 注意：总积分范围应覆盖更广的波长范围，但需要避开可能导致溢出的极短波长
     # 这里从1e-6米（1微米）开始积分，覆盖紫外、可见光和红外
+    visible_integral, _ = integrate.quad(
+        lambda wavelength: planck_law(wavelength, temperature),
+        VISIBLE_LIGHT_MIN,
+        VISIBLE_LIGHT_MAX
+    )
+
+    # 注意：总积分范围应覆盖更广的波长范围，但需要避开可能导致溢出的极短波长
+    # 这里从1e-12米（1皮米）开始积分，覆盖更广泛的波段
     total_integral, _ = integrate.quad(
         lambda wavelength: planck_law(wavelength, temperature),
-        1e-6,  # 从1微米开始
-        1e-3   # 到1毫米
+        1e-12,  # 从1皮米开始
+        1e-3    # 到1毫米
     )
 
     if total_integral == 0:
@@ -114,7 +126,7 @@ def find_optimal_temperature():
     # [STUDENT_CODE_HERE]
     result = minimize_scalar(
         lambda T: -calculate_visible_power_ratio(T),
-        bounds=(1000, 6000),  # 调整上界
+        bounds=(1000, 10000),  # 调整上界
         method='bounded',
         options={'xatol': 1.0}
     )
