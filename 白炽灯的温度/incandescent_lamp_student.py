@@ -36,7 +36,6 @@ def planck_law(wavelength, temperature):
     # [STUDENT_CODE_HERE]
     wavelength = np.clip(wavelength, 1e-18, np.inf)
     exponent = H * C / (wavelength * K_B * temperature)
-    # 避免指数溢出，同时保留更多精度
     exponent = np.clip(exponent, -700, 700)
     denominator = wavelength**5 * (np.exp(exponent) - 1)
     denominator = np.clip(denominator, 1e-40, np.inf)
@@ -67,7 +66,6 @@ def calculate_visible_power_ratio(temperature):
     )
 
     # 注意：总积分范围应覆盖更广的波长范围，但需要避开可能导致溢出的极短波长
-    # 这里从1e-12米（1皮米）开始积分，覆盖更广泛的波段
     total_integral, _ = integrate.quad(
         lambda wavelength: planck_law(wavelength, temperature),
         1e-12,  # 从1皮米开始
@@ -79,7 +77,7 @@ def calculate_visible_power_ratio(temperature):
 
     visible_power_ratio = visible_integral / total_integral
     return visible_power_ratio
-
+    
 def plot_efficiency_vs_temperature(temp_range):
     """
     绘制效率-温度关系曲线
@@ -93,14 +91,14 @@ def plot_efficiency_vs_temperature(temp_range):
     # TODO: 计算并绘制效率-温度曲线
     # [STUDENT_CODE_HERE]
     efficiencies = np.array([calculate_visible_power_ratio(T) for T in temp_range])
-    
+
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.plot(temp_range, efficiencies, 'b-', linewidth=2)
     ax.set_xlabel('Temperature (K)', fontsize=12)
     ax.set_ylabel('Visible Light Efficiency', fontsize=12)
     ax.set_title('Incandescent Lamp Efficiency vs Temperature', fontsize=14)
     ax.grid(True, alpha=0.3)
-    
+
     return fig, temp_range, efficiencies
 
 
@@ -116,7 +114,7 @@ def find_optimal_temperature():
     # [STUDENT_CODE_HERE]
     result = minimize_scalar(
         lambda T: -calculate_visible_power_ratio(T),
-        bounds=(1000, 10000),  # 调整上界
+        bounds=(1000, 10000),  # 扩大搜索范围
         method='bounded',
         options={'xatol': 1.0}
     )
