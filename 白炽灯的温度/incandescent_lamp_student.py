@@ -65,9 +65,10 @@ def calculate_visible_power_ratio(temperature):
     
     total_integral, _ = integrate.quad(
         lambda wavelength: planck_law(wavelength, temperature),
-        1e-12, 
-        np.inf
+        1e-12,  
+        1e-5  
     )
+    
     if total_integral == 0:
         return 0
     
