@@ -74,7 +74,7 @@ def newton_method(f, df, x0, tol=1e-8, max_iter=100):
     # [STUDENT_CODE_HERE]
     # 提示: 迭代公式为 x_{n+1} = x_n - f(x_n)/df(x_n)
     
-   x = x0
+    x = x0
     iterations = 0
     converged = False
     for _ in range(max_iter):
