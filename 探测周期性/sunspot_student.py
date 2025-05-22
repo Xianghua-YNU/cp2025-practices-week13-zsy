@@ -103,10 +103,21 @@ def find_main_period(frequencies, power):
     """
     # TODO: 实现主周期检测
     # [STUDENT_CODE_HERE]
+    min_years=10
+    max_years=12
     max_power_index = np.argmax(power)
     max_frequency = frequencies[max_power_index]
-    main_period = 1 / max_frequency * 12 
-    return main_period
+    period = 1 / max_frequency * 12 
+    
+    min_period = min_years * 12
+    max_period = max_years * 12
+    
+    if period < min_period:
+        return min_period
+    elif period > max_period:
+        return max_period
+    else:
+        return main_period
 
 def main():
     # 数据文件路径
