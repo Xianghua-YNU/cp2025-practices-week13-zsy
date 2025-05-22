@@ -114,13 +114,15 @@ def find_energy_level_bisection(n, V, w, m, precision=0.001, E_min=0.001, E_max=
             return np.tan(k * w) + np.sqrt(E / (V - E))
 
     # 二分法求解
-    while E_max - E_min > precision:
+    max_iter = 1000  # 设置最大迭代次数
+    for _ in range(max_iter):
         E_mid = (E_min + E_max) / 2
         f_mid = f_E(E_mid)
         
-        if f_mid == 0:
+        if abs(f_mid) < 1e-6 or E_max - E_min < precision:
             return E_mid
-        elif f_mid * f_E(E_min) < 0:
+        
+        if f_mid * f_E(E_min) < 0:
             E_max = E_mid
         else:
             E_min = E_mid
