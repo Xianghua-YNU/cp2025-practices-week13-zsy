@@ -36,15 +36,11 @@ def planck_law(wavelength, temperature):
     # [STUDENT_CODE_HERE]
     wavelength = np.clip(wavelength, 1e-18, np.inf)
     exponent = H * C / (wavelength * K_B * temperature)
-    exponent = np.clip(exponent, -700, 700)
+    exponent = np.clip(exponent, -600, 600)
     denominator = wavelength**5 * (np.exp(exponent) - 1)
     denominator = np.clip(denominator, 1e-40, np.inf)
     intensity = (2 * H * C**2) / denominator
     return intensity
-
-
-
-
 
 def calculate_visible_power_ratio(temperature):
     """
@@ -68,7 +64,7 @@ def calculate_visible_power_ratio(temperature):
     # 注意：总积分范围应覆盖更广的波长范围，但需要避开可能导致溢出的极短波长
     total_integral, _ = integrate.quad(
         lambda wavelength: planck_law(wavelength, temperature),
-        1e-12,  # 从1皮米开始
+        1e-9,  # 从1皮米开始
         1e-3    # 到1毫米
     )
 
