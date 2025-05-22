@@ -114,7 +114,7 @@ def find_energy_level_bisection(n, V, w, m, precision=0.001, E_min=0.001, E_max=
         k = np.sqrt(2 * m * E_joules) / HBAR
         q = np.sqrt(2 * m * (V_joules - E_joules)) / HBAR
      
-   while (E_max - E_min) > precision:
+    while (E_max - E_min) > precision:
         E_mid = (E_min + E_max) / 2  # 区间中点
         f_E_mid = equation(E_mid)
         
@@ -127,9 +127,9 @@ def find_energy_level_bisection(n, V, w, m, precision=0.001, E_min=0.001, E_max=
         else:  # 如果根在右半区间
             E_max = E_mid
             f_E_max = f_E_mid
-    
-    # 返回区间中点作为近似解
     return (E_min + E_max) / 2 
+        
+ 
     
 def main():
     """
