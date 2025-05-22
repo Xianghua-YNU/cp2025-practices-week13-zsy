@@ -116,7 +116,7 @@ def plot_comparison(original, filtered, title="Fourier Filter Result"):
 
 def main():
     # 任务1：数据加载与可视化
-    data = load_data('dow.txt')
+    data = load_data('dow.txt') 
     plot_data(data, "Dow Jones Industrial Average - Original Data")
     
     # 任务2：傅立叶变换与滤波（保留前10%系数）
