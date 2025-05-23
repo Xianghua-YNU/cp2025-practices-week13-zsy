@@ -32,15 +32,16 @@ def calculate_y_values(E_values, V, w, m):
     # [STUDENT_CODE_HERE]
     # 提示: 注意单位转换和避免数值计算中的溢出或下溢
     
-    V_joules = V * EV_TO_JOULE
-    E_joules = E_values * EV_TO_JOULE
+    v = V * EV_TO_JOULE
+    e = E_values * EV_TO_JOULE
 
-    k = np.sqrt(2 * m * E_joules) / HBAR
-    q = np.sqrt(2 * m * (V_joules - E_joules)) / HBAR
+    k = np.sqrt(2 * m * e) / HBAR
+    q = np.sqrt(2 * m * (v - e)) / HBAR
 
     y1 = np.tan(k * w)
-    y2 = np.sqrt((V - E_values) / E_values)
-    y3 = -np.sqrt(E_values / (V - E_values))
+    y2 = np.sqrt((v - e) / e) 
+    y3 = -np.sqrt(e / (v - e))  
+
     return y1, y2, y3
 
 def plot_energy_functions(E_values, y1, y2, y3):
@@ -96,23 +97,25 @@ def find_energy_level_bisection(n, V, w, m, precision=0.001, E_min=0.001, E_max=
     # 提示: 需要考虑能级的奇偶性，偶数能级使用偶宇称方程，奇数能级使用奇宇称方程
     
     if E_max is None:
-        E_max = V - 0.001  # 避免在V处的奇点
+        E_max = V - 0.001 
+        
+     E_low = E_min
+     E_high = E_max
+     
+     max_iter = 10000
 
     def energy_equation(E):
-        E_joules = E * EV_TO_JOULE
-        V_joules = V * EV_TO_JOULE
+        e = E * EV_TO_JOULE
+        v = V * EV_TO_JOULE
         factor = (w**2 * m) / (2 * HBAR**2)
-        left = np.tan(np.sqrt(factor * E_joules))
-        if n % 2 == 0:  # 偶数能级
-            right = np.sqrt((V_joules - E_joules) / E_joules)
-        else:  # 奇数能级
-            right = -np.sqrt(E_joules / (V_joules - E_joules))
+        left = np.tan(np.sqrt(factor * e))
+        if n % 2 == 0:  
+            right = np.sqrt((v - e) / e)
+        else:  
+            right = -np.sqrt(e / (v - e))
         return left - right
 
-    E_low = E_min
-    E_high = E_max
-
-    max_iter = 10000  
+     
     for _ in range(max_iter):
         E_mid = (E_low + E_high) / 2
         f_mid = energy_equation(E_mid)
