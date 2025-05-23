@@ -102,7 +102,7 @@ def find_energy_level_bisection(n, V, w, m, precision=0.001, E_min=0.001, E_max=
     E_low = E_min
     E_high = E_max
      
-     max_iter = 10000
+    max_iter = 10000
 
     def energy_equation(E):
         e = E * EV_TO_JOULE
