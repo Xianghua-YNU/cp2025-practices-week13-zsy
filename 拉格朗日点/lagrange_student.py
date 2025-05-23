@@ -32,7 +32,7 @@ def lagrange_equation(r):
     # [STUDENT_CODE_HERE]
     # 提示: 方程应该包含地球引力、月球引力和离心力的平衡关系
     
-    raise NotImplementedError("请在 {} 中实现此函数。".format(__file__))
+    equation_value = G*M/(r**2) - G*m/((R - r)**2) - omega**2 * r
     
     return equation_value
 
@@ -51,7 +51,7 @@ def lagrange_equation_derivative(r):
     # [STUDENT_CODE_HERE]
     # 提示: 对lagrange_equation函数求导
     
-    raise NotImplementedError("请在 {} 中实现此函数。".format(__file__))
+    derivative_value = -2*G*M/(r**3) - 2*G*m/((R - r)**3) - omega**2
     
     return derivative_value
 
@@ -74,7 +74,16 @@ def newton_method(f, df, x0, tol=1e-8, max_iter=100):
     # [STUDENT_CODE_HERE]
     # 提示: 迭代公式为 x_{n+1} = x_n - f(x_n)/df(x_n)
     
-    raise NotImplementedError("请在 {} 中实现此函数。".format(__file__))
+    x = x0
+    iterations = 0
+    converged = False
+    for _ in range(max_iter):
+        iterations += 1
+        x_prev = x
+        x = x_prev - f(x_prev)/df(x_prev)
+        if abs(x - x_prev) < tol:
+            converged = True
+            break 
     
     return x, iterations, converged
 
@@ -97,7 +106,18 @@ def secant_method(f, a, b, tol=1e-8, max_iter=100):
     # [STUDENT_CODE_HERE]
     # 提示: 迭代公式为 x_{n+1} = x_n - f(x_n)*(x_n-x_{n-1})/(f(x_n)-f(x_{n-1}))
     
-    raise NotImplementedError("请在 {} 中实现此函数。".format(__file__))
+    x_prev_prev = a
+    x_prev = b
+    iterations = 0
+    converged = False
+    for _ in range(max_iter):
+        iterations += 1
+        x = x_prev - f(x_prev)*(x_prev - x_prev_prev)/(f(x_prev) - f(x_prev_prev))
+        if abs(x - x_prev) < tol:
+            converged = True
+            break
+        x_prev_prev = x_prev
+        x_prev = x
     
     return x, iterations, converged
 
@@ -118,8 +138,17 @@ def plot_lagrange_equation(r_min, r_max, num_points=1000):
     # [STUDENT_CODE_HERE]
     # 提示: 在合适的范围内绘制函数图像，标记零点位置
     
-    raise NotImplementedError("请在 {} 中实现此函数。".format(__file__))
+    r_values = np.linspace(r_min, r_max, num_points)
+    f_values = np.array([lagrange_equation(r) for r in r_values])
     
+    fig = plt.figure(figsize=(10, 6))
+    plt.plot(r_values, f_values, label='L1 equation')
+    plt.axhline(0, color='black', linewidth=0.5)
+    plt.title('L1 Lagrange point position equation')
+    plt.xlabel('Distance from the center of the Earth r (m)')
+    plt.ylabel('The value of the equation')
+    plt.grid(True)
+    plt.legend()
     return fig
 
 

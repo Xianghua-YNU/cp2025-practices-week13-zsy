@@ -23,7 +23,11 @@ def load_data(filename):
     # [STUDENT_CODE_HERE]
     # 提示: 使用np.loadtxt加载数据文件，处理可能的异常
     
-    raise NotImplementedError("请在 {} 中实现此函数。".format(__file__))
+    try:
+        data = np.loadtxt(filename)
+    except Exception as e:
+        print(f"加载文件时发生错误: {e}")
+        return None
     
     return data
 
@@ -42,7 +46,15 @@ def plot_data(data, title="Dow Jones Industrial Average"):
     # [STUDENT_CODE_HERE]
     # 提示: 使用plt.plot绘制数据，添加适当的标签和标题
     
-    raise NotImplementedError("请在 {} 中实现此函数。".format(__file__))
+    fig = plt.figure(figsize=(10, 6))
+    plt.plot(data)
+    plt.title(title)
+    plt.xlabel("trading day")
+    plt.ylabel("exponential value")
+    plt.grid(True)
+    plt.savefig(f"{title}.png")  
+    plt.show()
+    return fig
 
 def fourier_filter(data, keep_fraction=0.1):
     """
@@ -63,7 +75,11 @@ def fourier_filter(data, keep_fraction=0.1):
     # 3. 创建滤波后的系数数组
     # 4. 使用np.fft.irfft计算逆变换
     
-    raise NotImplementedError("请在 {} 中实现此函数。".format(__file__))
+    fft_coeff = np.fft.rfft(data)
+    cutoff = int(len(fft_coeff) * keep_fraction)
+    fft_coeff_truncated = fft_coeff.copy()
+    fft_coeff_truncated[cutoff:] = 0
+    filtered_data = np.fft.irfft(fft_coeff_truncated)
     
     return filtered_data, fft_coeff
 
@@ -86,11 +102,21 @@ def plot_comparison(original, filtered, title="Fourier Filter Result"):
     # 2. 添加图例、标签和标题
     # 3. 使用plt.grid添加网格线
     
-    raise NotImplementedError("请在 {} 中实现此函数。".format(__file__))
+    fig = plt.figure(figsize=(10, 6))
+    plt.plot(original, label="original data", alpha=0.7)
+    plt.plot(filtered, label="Filtered data", linestyle="--")
+    plt.title(title)
+    plt.xlabel("trading day")
+    plt.ylabel("exponential value")
+    plt.legend()
+    plt.grid(True)
+    plt.savefig(f"{title}.png") 
+    plt.show()
+    return fig
 
 def main():
     # 任务1：数据加载与可视化
-    data = load_data('dow.txt')
+    data = load_data('dow.txt') 
     plot_data(data, "Dow Jones Industrial Average - Original Data")
     
     # 任务2：傅立叶变换与滤波（保留前10%系数）

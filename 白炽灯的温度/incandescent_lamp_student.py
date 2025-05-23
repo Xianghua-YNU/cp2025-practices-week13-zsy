@@ -13,7 +13,7 @@ from scipy.optimize import minimize_scalar
 
 # 物理常数
 H = 6.62607015e-34  # 普朗克常数 (J·s)
-C = 299792458       # 光速 (m/s)
+C = 299792458       # 光速 (m/s) 
 K_B = 1.380649e-23  # 玻尔兹曼常数 (J/K)
 
 # 可见光波长范围 (m)
@@ -34,9 +34,10 @@ def planck_law(wavelength, temperature):
     """
     # TODO: 实现普朗克黑体辐射公式
     # [STUDENT_CODE_HERE]
-    raise NotImplementedError("请在 {} 中实现此函数".format(__file__))
+    numerator = 2.0 * H * C**2 / (wavelength**5)
+    exponent = np.exp(H * C / (wavelength * K_B * temperature))
+    intensity = numerator / (exponent - 1.0)
     return intensity
-
 
 def calculate_visible_power_ratio(temperature):
     """
@@ -51,10 +52,25 @@ def calculate_visible_power_ratio(temperature):
     # TODO: 使用数值积分计算可见光效率
     # 提示: 使用scipy.integrate.quad进行积分
     # [STUDENT_CODE_HERE]
-    raise NotImplementedError("请在 {} 中实现此函数".format(__file__))
+    visible_integral, _ = integrate.quad(
+        lambda wavelength: planck_law(wavelength, temperature),
+        VISIBLE_LIGHT_MIN,
+        VISIBLE_LIGHT_MAX
+    )
+
+    total_integral, _ = integrate.quad(
+        lambda wavelength: planck_law(wavelength, temperature),
+        1e-9,  
+        1e-3   
+    )
+    def intensity_function(wavelength):
+        return planck_law(wavelength, temperature)
+    
+    visible_power, _ = integrate.quad(intensity_function, VISIBLE_LIGHT_MIN, VISIBLE_LIGHT_MAX)
+    total_power, _ = integrate.quad(intensity_function, 1e-9, 10000e-9)
+    visible_power_ratio = visible_power / total_power
     return visible_power_ratio
-
-
+    
 def plot_efficiency_vs_temperature(temp_range):
     """
     绘制效率-温度关系曲线
@@ -67,7 +83,15 @@ def plot_efficiency_vs_temperature(temp_range):
     """
     # TODO: 计算并绘制效率-温度曲线
     # [STUDENT_CODE_HERE]
-    raise NotImplementedError("请在 {} 中实现此函数".format(__file__))
+    efficiencies = np.array([calculate_visible_power_ratio(T) for T in temp_range])
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.plot(temp_range, efficiencies, 'b-', linewidth=2)
+    ax.set_xlabel('Temperature (K)', fontsize=12)
+    ax.set_ylabel('Visible Light Efficiency', fontsize=12)
+    ax.set_title('Incandescent Lamp Efficiency vs Temperature', fontsize=14)
+    ax.grid(True, alpha=0.3)
+
     return fig, temp_range, efficiencies
 
 
@@ -81,9 +105,17 @@ def find_optimal_temperature():
     # TODO: 使用scipy.optimize.minimize_scalar寻找最优温度
     # 提示: 设置bounds=(1000,10000)和options={'xatol':1.0}
     # [STUDENT_CODE_HERE]
-    raise NotImplementedError("请在 {} 中实现此函数".format(__file__))
-    return optimal_temp, optimal_efficiency
+    result = minimize_scalar(
+        lambda T: -calculate_visible_power_ratio(T),
+        bounds=(1000, 10000),  
+        method='bounded',
+        options={'xatol': 1.0}
+    )
 
+    optimal_temp = result.x
+    optimal_efficiency = -result.fun
+
+    return optimal_temp, optimal_efficiency
 
 def main():
     """

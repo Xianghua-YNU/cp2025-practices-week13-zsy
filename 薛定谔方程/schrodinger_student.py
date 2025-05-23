@@ -32,10 +32,17 @@ def calculate_y_values(E_values, V, w, m):
     # [STUDENT_CODE_HERE]
     # 提示: 注意单位转换和避免数值计算中的溢出或下溢
     
-    raise NotImplementedError("请在 {} 中实现此函数。".format(__file__))
-    
-    return y1, y2, y3
+    v = V * EV_TO_JOULE
+    e = E_values * EV_TO_JOULE
 
+    k = np.sqrt(2 * m * e) / HBAR
+    q = np.sqrt(2 * m * (v - e)) / HBAR
+
+    y1 = np.tan(k * w)
+    y2 = np.sqrt((v - e) / e) 
+    y3 = -np.sqrt(e / (v - e))  
+
+    return y1, y2, y3
 
 def plot_energy_functions(E_values, y1, y2, y3):
     """
@@ -54,7 +61,17 @@ def plot_energy_functions(E_values, y1, y2, y3):
     # [STUDENT_CODE_HERE]
     # 提示: 使用不同颜色和线型，添加适当的标签、图例和标题
     
-    raise NotImplementedError("请在 {} 中实现此函数。".format(__file__))
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    ax.plot(E_values, y1, label='tan(kw)', color='blue')
+    ax.plot(E_values, y2, label='sqrt((V-E)/E)', color='red', linestyle='--')
+    ax.plot(E_values, y3, label='-sqrt(E/(V-E))', color='green', linestyle='--')
+
+    ax.set_title('Energy level equation')
+    ax.set_xlabel('Energy E (eV)')
+    ax.set_ylabel('function value')
+    ax.legend()
+    ax.grid(True)
     
     return fig
 
@@ -79,11 +96,42 @@ def find_energy_level_bisection(n, V, w, m, precision=0.001, E_min=0.001, E_max=
     # [STUDENT_CODE_HERE]
     # 提示: 需要考虑能级的奇偶性，偶数能级使用偶宇称方程，奇数能级使用奇宇称方程
     
-    raise NotImplementedError("请在 {} 中实现此函数。".format(__file__))
+    if E_max is None:
+        E_max = V 
+
+    E_low = E_min
+    E_high = E_max
+     
+    max_iter = 10000
+
+    def energy_equation(E):
+        e = E * EV_TO_JOULE
+        v = V * EV_TO_JOULE
+        factor = (w**2 * m) / (2 * HBAR**2)
+        left = np.tan(np.sqrt(factor * e))
+        if n % 2 == 0:  
+            right = np.sqrt((v - e) / e)
+        else:  
+            right = -np.sqrt(e / (v - e))
+        return left - right
+
+     
+    for _ in range(max_iter):
+        E_mid = (E_low + E_high) / 2
+        f_mid = energy_equation(E_mid)
+        
+        if abs(f_mid) < precision or E_high - E_low < precision:
+            return E_mid
+        
+        if f_mid * energy_equation(E_low) < 0:
+            E_high = E_mid
+        else:
+            E_low = E_mid
+
+    return (E_low + E_high) / 2
+        
+ 
     
-    return energy_level
-
-
 def main():
     """
     主函数，执行方势阱能级的计算和可视化
